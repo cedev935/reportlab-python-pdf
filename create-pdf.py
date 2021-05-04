@@ -29,6 +29,8 @@ def create_pdf(
 
     pdf_file = "generated-pdf/" + transaction_reference + ".pdf"
     img_file = "images/zb-bank.png"
+    whatsapp_banking_img_file = "images/whatsapp-banking.jpg"
+    whatsapp_qrcode_img_file = "images/qrcode.jpeg"
 
     can = canvas.Canvas(pdf_file)
 
@@ -40,6 +42,18 @@ def create_pdf(
         y_start,
         width=120,
         height=60,
+        preserveAspectRatio=True,
+        mask="auto",
+    )
+
+    x_start = 380
+    y_start = 740
+    can.drawImage(
+        whatsapp_banking_img_file,
+        x_start,
+        y_start,
+        width=120,
+        height=70,
         preserveAspectRatio=True,
         mask="auto",
     )
@@ -88,6 +102,18 @@ def create_pdf(
     )
     can.drawString(50, 290, "+263 8677002005")
     can.drawString(50, 270, "SMS /WhatsApp: +263 772442685")
+
+    x_start = 25
+    y_start = 120
+    can.drawImage(
+        whatsapp_qrcode_img_file,
+        x_start,
+        y_start,
+        width=200,
+        height=100,
+        preserveAspectRatio=True,
+        mask="auto",
+    )
 
     can.showPage()
 
