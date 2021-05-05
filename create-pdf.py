@@ -1,8 +1,12 @@
+from PyPDF2 import PdfFileWriter, PdfFileReader
+import io
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
+packet = io.BytesIO()
 
 
 def create_pdf(
-    client_name: str,
     beneficiary_name: str,
     beneficiary_bank: str,
     beneficiary_account_number: str,
@@ -15,7 +19,6 @@ def create_pdf(
     """Create PDF
 
     Args:
-        client_name: client_name
         beneficiary_name: beneficiary_name
         beneficiary_bank: beneficiary_bank
         beneficiary_account_number: beneficiary_account_number
@@ -26,101 +29,36 @@ def create_pdf(
         transaction_purpose: transaction_purpose
 
     """
+    can = canvas.Canvas(packet, pagesize=letter)
 
-    pdf_file = "generated-pdf/" + transaction_reference + ".pdf"
-    img_file = "images/zb-bank.png"
-    whatsapp_banking_img_file = "images/whatsapp-banking.jpg"
-    whatsapp_qrcode_img_file = "images/qrcode.jpeg"
-
-    can = canvas.Canvas(pdf_file)
-
-    x_start = 30
-    y_start = 740
-    can.drawImage(
-        img_file,
-        x_start,
-        y_start,
-        width=120,
-        height=60,
-        preserveAspectRatio=True,
-        mask="auto",
-    )
-
-    x_start = 380
-    y_start = 740
-    can.drawImage(
-        whatsapp_banking_img_file,
-        x_start,
-        y_start,
-        width=120,
-        height=70,
-        preserveAspectRatio=True,
-        mask="auto",
-    )
-
-    can.setFont("Times-Roman", 13)
-    can.drawString(50, 710, "Dear : " + client_name)
-    can.drawString(
-        50,
-        680,
-        "Thank you for transacting using the ZB Internet Banking platform.  Please find below a",
-    )
-    can.drawString(
-        50, 660, "confirmation of the Internet transaction that was done in respect of:"
-    )
-
-    can.drawString(50, 620, "Beneficiary Name")
-    can.drawString(210, 620, ": " + beneficiary_name)
-
-    can.drawString(50, 590, "Beneficiary Bank Name")
-    can.drawString(210, 590, ": " + beneficiary_bank)
-
-    can.drawString(50, 560, "Beneficiary Account Number")
-    can.drawString(210, 560, ": " + beneficiary_account_number)
-
-    can.drawString(50, 530, "Transaction Amount")
-    can.drawString(210, 530, ": " + transaction_amount)
-
-    can.drawString(50, 500, "Transaction Date")
-    can.drawString(210, 500, ": " + transaction_date)
-
-    can.drawString(50, 470, "Transaction Type")
-    can.drawString(210, 470, ": " + transaction_type)
-
-    can.drawString(50, 440, "Transaction Reference")
-    can.drawString(210, 440, ": " + transaction_reference)
-
-    can.drawString(50, 410, "Transaction Purpose")
-    can.drawString(210, 410, ": " + transaction_purpose)
-
-    can.drawString(50, 350, "For & on behalf of ZB Bank")
-
-    can.drawString(
-        50,
-        310,
-        "For any queries kindly get in touch with our 24 Hour ZB Contact Centre on:",
-    )
-    can.drawString(50, 290, "+263 8677002005")
-    can.drawString(50, 270, "SMS /WhatsApp: +263 772442685")
-
-    x_start = 25
-    y_start = 120
-    can.drawImage(
-        whatsapp_qrcode_img_file,
-        x_start,
-        y_start,
-        width=200,
-        height=100,
-        preserveAspectRatio=True,
-        mask="auto",
-    )
-
-    can.showPage()
-
+    # can.setFillColorRGB(255, 255, 255) #
+    can.drawString(280, 503, beneficiary_name)
+    can.drawString(280, 477, beneficiary_bank)
+    can.drawString(280, 453, beneficiary_account_number)
+    can.drawString(280, 427, transaction_amount)
+    can.drawString(280, 402, transaction_date)
+    can.drawString(280, 377, transaction_type)
+    can.drawString(280, 355, transaction_reference)
+    can.drawString(280, 330, transaction_purpose)
     can.save()
 
+    packet.seek(0)
+    new_pdf = PdfFileReader(packet)
 
-client_name = "INTELLI AFRICA SOLUTIONS"
+    # getting the existing pdf file
+    existing_pdf = PdfFileReader(open("assets/original.pdf", "rb"), strict=False)
+    output = PdfFileWriter()
+
+    # add our text to the pdf
+    page = existing_pdf.getPage(0)
+    page.mergePage(new_pdf.getPage(0))
+    output.addPage(page)
+
+    # genertate a new pdf
+    outputStream = open("generated-pdf/" + transaction_reference + ".pdf", "wb")
+    output.write(outputStream)
+    outputStream.close()
+
 beneficiary_name = "Schweppes"
 beneficiary_bank = "Steward Bank"
 beneficiary_account_number = "1003088252"
@@ -132,7 +70,6 @@ transaction_purpose = "null"
 
 
 create_pdf(
-    client_name=client_name,
     beneficiary_name=beneficiary_name,
     beneficiary_bank=beneficiary_bank,
     beneficiary_account_number=beneficiary_account_number,
