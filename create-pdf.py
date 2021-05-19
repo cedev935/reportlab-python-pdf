@@ -2,8 +2,9 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+# import random
+# import string
 
-packet = io.BytesIO()
 
 
 def create_pdf(
@@ -29,8 +30,10 @@ def create_pdf(
         transaction_purpose: transaction_purpose
 
     """
-    can = canvas.Canvas(packet, pagesize=letter)
+    packet = io.BytesIO()
 
+    can = canvas.Canvas(packet, pagesize=letter)
+    
     # can.setFillColorRGB(255, 255, 255) #
     can.drawString(280, 503, beneficiary_name)
     can.drawString(280, 477, beneficiary_bank)
@@ -44,12 +47,11 @@ def create_pdf(
 
     packet.seek(0)
     new_pdf = PdfFileReader(packet)
-
     # getting the existing pdf file
-    existing_pdf = PdfFileReader(open("assets/original.pdf", "rb"), strict=False)
+    existing_pdf = PdfFileReader(open("assets/original.pdf", "rb"))
     output = PdfFileWriter()
 
-    # add our text to the pdf
+    # add our text to the pdf 
     page = existing_pdf.getPage(0)
     page.mergePage(new_pdf.getPage(0))
     output.addPage(page)
@@ -69,6 +71,8 @@ transaction_reference = "413110430H000274"
 transaction_purpose = "null"
 
 
+# i = 0
+# while i < 100:
 create_pdf(
     beneficiary_name=beneficiary_name,
     beneficiary_bank=beneficiary_bank,
@@ -79,3 +83,5 @@ create_pdf(
     transaction_reference=transaction_reference,
     transaction_purpose=transaction_purpose,
 )
+
+    # i += 1
