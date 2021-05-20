@@ -2,9 +2,7 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-# import random
-# import string
-
+from send_email import EmailController as email_controller
 
 
 def create_pdf(
@@ -60,6 +58,10 @@ def create_pdf(
     outputStream = open("generated-pdf/" + transaction_reference + ".pdf", "wb")
     output.write(outputStream)
     outputStream.close()
+
+    email_controller.send_pop_as_email(transaction_reference)
+
+
 
 beneficiary_name = "Schweppes"
 beneficiary_bank = "Steward Bank"
