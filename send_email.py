@@ -7,7 +7,13 @@ from email import encoders
 class EmailController:
 
     def send_pop_as_email(transaction_reference):
+        """Send generated pdf as email
 
+        Args:
+            transaction_reference: transaction_reference
+
+
+        """
         # body of the email
         body = '''
         Good day,
