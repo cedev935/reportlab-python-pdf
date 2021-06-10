@@ -134,21 +134,21 @@ transactions = [
 
 ]
 
-i = 0
-while i < 2:
-    test_account_number = "".join(
-            random.choice(string.ascii_uppercase + string.digits) for i in range(8)
-        )
+# i = 0
+# while i < 2:
+#     test_account_number = "".join(
+#             random.choice(string.ascii_uppercase + string.digits) for i in range(8)
+#         )
 
-    generate_pop(
-        account_holder_name=account_holder_name,
-        account_holder_full_name=account_holder_full_name,
-        account_holder_address=account_holder_address,
-        account_holder_city_country=account_holder_city_country,
-        account_number=test_account_number,
-        currency=currency,
-        account_type=account_type,
-        transactions=transactions,
-    )
+generate_pop(
+    account_holder_name=account_holder_name,
+    account_holder_full_name=account_holder_full_name,
+    account_holder_address=account_holder_address,
+    account_holder_city_country=account_holder_city_country,
+    account_number=test_account_number,
+    currency=currency,
+    account_type=account_type,
+    transactions=transactions,
+)
 
-    i += 1
+    # i += 1
